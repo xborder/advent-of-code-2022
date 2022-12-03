@@ -34,9 +34,16 @@ class Day3 {
         Console.WriteLine($"Part 1: {sum}");
     }
 
-    private static void part2(string[] input) {
+    private static void part2_v1(string[] input) {
         var sum = 0;
         
+        input
+        .Select(s => s.ToCharArray().AsEnumerable())
+        .Chunk(3)
+        .Select(s => s[0].Intersect(s[1]).Intersect(s[2]).First())
+        .Select(c => CharPriority(c))
+        .Sum();
+
         var intersection = input.First().ToCharArray().AsEnumerable();
         var elfNum = 1;
         foreach(var elf in input.Skip(1)) {
@@ -52,13 +59,25 @@ class Day3 {
         }
         //last group
         sum += CharPriority(intersection.First());
-        Console.WriteLine($"Part 2: {sum}");
+        Console.WriteLine($"Part 2 v1: {sum}");
     }
 
+    private static void part2_v2(string[] input) {
+        var sum = input
+                    .Select(s => s.ToCharArray().AsEnumerable())
+                    .Chunk(3)
+                    .Select(s => s[0].Intersect(s[1]).Intersect(s[2]).First())
+                    .Select(c => CharPriority(c))
+                    .Sum();
+
+
+        Console.WriteLine($"Part 2 v2: {sum}");
+    }
     public static void Run() {
         string[] input = File.ReadAllLines(@"input/3");
 
         part1(input);
-        part2(input);
+        part2_v1(input);
+        part2_v2(input);
     }
 }
