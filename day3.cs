@@ -1,5 +1,6 @@
 
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 class Day3 {
     private static int CharPriority(char c) {
@@ -26,13 +27,25 @@ class Day3 {
         return ' ';
     }
 
-    private static void part1(string[] input) {
+    private static void part1_v1(string[] input) {
         var sum = 0;
         foreach(var line in input) {
             sum += CharPriority(GetRepeatedChar(line.ToCharArray()));
         }
-        Console.WriteLine($"Part 1: {sum}");
+        Console.WriteLine($"Part 1 v1: {sum}");
     }
+
+    private static void part1_v2(string[] input) {
+        var sum = input
+        .Select(s => s.ToCharArray().AsEnumerable())
+        .Select(s => s.Take(s.Count()/2).Intersect(s.TakeLast(s.Count()/2)).First())
+        .Select(c => CharPriority(c))
+        .Sum();
+
+        Console.WriteLine($"Part 1 v2: {sum}");
+    }
+
+    
 
     private static void part2_v1(string[] input) {
         var sum = 0;
@@ -73,11 +86,22 @@ class Day3 {
 
         Console.WriteLine($"Part 2 v2: {sum}");
     }
+
+    private static void measure(Action action) {
+        Console.WriteLine("=== Measuring ===");
+        var watch = Stopwatch.StartNew();
+        action();
+        watch.Stop();
+        Console.WriteLine($"Total: {watch.Elapsed.Ticks}");
+    }
+
     public static void Run() {
         string[] input = File.ReadAllLines(@"input/3");
 
-        part1(input);
-        part2_v1(input);
-        part2_v2(input);
+        measure(() => part1_v1(input));
+        measure(() => part1_v2(input));
+        measure(() => part2_v1(input));
+        measure(() => part2_v2(input));
     }
+
 }
